@@ -21,7 +21,7 @@ namespace gr {
       
       static sptr make(u_int32_t reference_time_full, u_int64_t reference_time_frac, std::string ip_addr, uint32_t port, uint8_t socket_type, bool mode, uint32_t samples_per_packet, 
                       int stream_number, int reference_point, u_int64_t samp_rate, int packet_class, int oui, int context_interval, int context_pack_size, int bit_depth, 
-                      int scaling, float gain, gr_complex offset, float max_iq, float min_iq);
+                      int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz);
     };
     typedef difi_sink_cpp<gr_complex> difi_sink_cpp_fc32;
     typedef difi_sink_cpp<std::complex<char>> difi_sink_cpp_sc8;
