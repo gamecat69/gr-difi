@@ -155,9 +155,9 @@ namespace gr {
         // information about. The value of 0x64 indicates it is at the RF input for the RF-to-IP
         // direction and the RF output in the IP-to-RF direction.
 
-        GR_LOG_INFO(this->d_logger, "reference_point: " + int64ToHex(reference_point));
-        GR_LOG_INFO(this->d_logger, "to_vita_bw: " + int64ToHex(to_vita_bw));
-        GR_LOG_INFO(this->d_logger, "samp_rate: " + int64ToHex(to_vita_samp_rate));
+        GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
+        GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
+        GR_LOG_INFO(this->d_logger, "samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
 
         //pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0xFBB98000  ); // CIF 11111011101110011000000000000000 0xFBB98000
         
@@ -439,7 +439,7 @@ namespace gr {
       std::ostringstream ss;
       ss << std::hex << input;
       std::string output = ss.str();
-      return "0x" << output;
+      return output;
     }
 
     template class difi_sink_cpp<gr_complex>;
