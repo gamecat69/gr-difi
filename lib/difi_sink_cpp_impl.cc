@@ -172,7 +172,7 @@ namespace gr {
         // pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // 9.7.3.1 Timestamp Adjustment
         // pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // 9.7.3.3 The Timestamp Calibration Time Field
         // pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], state_and_event_id);
-        // pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], data_payload_format);\
+        // pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], data_payload_format);
 
         // bandwidth: 200000 : 00000030d4000000
         // bandwidth: 5000000: 000004c4b4000000
@@ -181,8 +181,8 @@ namespace gr {
         // samplerate: 5625000 : 0000055d4a800000
 
         pack_u32(&d_context_raw[28], 0xB9A18000); // CIF
-        //pack_u64(&d_context_raw[32], to_vita_bw); // 9.5.1 Bandwidth Field
-        pack_u64(&d_context_raw[32], 0x000004c4b4000000); // 9.5.1 Bandwidth Field
+        pack_u64(&d_context_raw[32], to_vita_bw); // 9.5.1 Bandwidth Field
+        //pack_u64(&d_context_raw[32], 0x000004c4b4000000); // 9.5.1 Bandwidth Field
         pack_u64(&d_context_raw[40], 0); // 9.5.5 IF Reference Frequency Field 
         pack_u64(&d_context_raw[48], 0x00084e3786000000); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
         pack_u32(&d_context_raw[56], 0x00000080); // 9.5.9 Reference Level Field
@@ -190,8 +190,9 @@ namespace gr {
         //pack_u64(&d_context_raw[64], samp_rate); // 9.5.12 Sample Rate Field
         //pack_u64(&d_context_raw[64], 0x0000055d4a800000); // 9.5.12 Sample Rate Field
         pack_u64(&d_context_raw[64], to_vita_samp_rate); // 9.5.12 Sample Rate Field
-        pack_u32(&d_context_raw[72], 0xa00a0000); // State and event indicators
-        pack_u64(&d_context_raw[76], 0xa00001c700000000);  // Data packet format
+        //pack_u32(&d_context_raw[72], 0xa00a0000); // State and event indicators
+        pack_u32(&d_context_raw[72], state_and_event_id); // State and event indicators
+        pack_u64(&d_context_raw[76], data_payload_format);  // Data packet format
       }
       d_out_buf.resize(d_data_len);
 
