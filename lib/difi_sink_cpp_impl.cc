@@ -115,7 +115,6 @@ namespace gr {
       u_int32_t state_and_event_id =difi::DEFAULT_STATE_AND_EVENTS; // default no events or state values. See 7.1.5.17 The State and Event Indicator Field of the VITA spec
       // no fractional bw or samp rate supported in gnuradio, see 2.2.2 Standard Flow Signal Context Packet for bandwidth information
       // Bandwidth spec: Refer to section 9.5.1 of the VITA 49.2 (AV49DOT2-2017__Earata.pdf)
-      // Nik Ansell: this conversion is incorrect. samp_rate must first be cast to a 64bit int
       u_int64_t to_vita_bw = u_int64_t(samp_rate * .8) << 20; // Converted to fixed point with radix point 20 bits to the left
       u_int64_t to_vita_samp_rate = samp_rate << 20; // Converted to fixed point with radix point 20 bits to the left
 
@@ -189,7 +188,8 @@ namespace gr {
         pack_u32(&d_context_raw[56], 0x00000080); // 9.5.9 Reference Level Field
         pack_u32(&d_context_raw[60], 0x00000380); // 9.5.3 Gain/Attenuation Field
         //pack_u64(&d_context_raw[64], samp_rate); // 9.5.12 Sample Rate Field
-        pack_u64(&d_context_raw[64], 0x0000055d4a800000); // 9.5.12 Sample Rate Field
+        //pack_u64(&d_context_raw[64], 0x0000055d4a800000); // 9.5.12 Sample Rate Field
+        pack_u64(&d_context_raw[64], to_vita_samp_rate); // 9.5.12 Sample Rate Field
         pack_u32(&d_context_raw[72], 0xa00a0000); // State and event indicators
         pack_u64(&d_context_raw[76], 0xa00001c700000000);  // Data packet format
       }
