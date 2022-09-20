@@ -49,7 +49,8 @@ namespace gr {
               d_context_packet_size(context_pack_size),
               d_contex_packet_interval(context_interval),
               p_tcpsocket(0),
-              p_udpsocket(0)
+              p_udpsocket(0),
+              d_bandwidth_hz(bandwidth_hz)
 
     {
       socket_type = (socket_type == 1) ?  SOCK_STREAM : SOCK_DGRAM;
