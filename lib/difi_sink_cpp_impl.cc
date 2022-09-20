@@ -155,7 +155,7 @@ namespace gr {
         // information about. The value of 0x64 indicates it is at the RF input for the RF-to-IP
         // direction and the RF output in the IP-to-RF direction.
 
-        GR_LOG_INFO(this->d_logger, "reference_point: " std::to_string(reference_point));
+        GR_LOG_INFO(this->d_logger, "reference_point: " + std::to_string(reference_point));
         GR_LOG_INFO(this->d_logger, "to_vita_bw: " + std::to_string(to_vita_bw));
         GR_LOG_INFO(this->d_logger, "samp_rate: " + std::to_string(to_vita_samp_rate));
 
