@@ -46,6 +46,7 @@ void bind_difi_sink_cpp_template(py::module& m, const char* classname)
            py::arg("offset"),
            py::arg("max_iq"),
            py::arg("min_iq"),
+           py::arg("bandwidth_hz"),
            D(difi_sink_cpp,make)
         );
 
