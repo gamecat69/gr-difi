@@ -128,6 +128,27 @@ inputs:
   domain: stream
   dtype: ${type.fcn}
 
+- id:  bandwidth_hz
+  label: Bandwidth (Hz)
+  category: RF
+  dtype: int
+  default: 5000000
+- id:  tx_gain
+  label: TX Gain (dB)
+  category: RF
+  dtype: int
+  default: 7
+- id:  if_ref_hz
+  label: IF Ref Freq (Hz)
+  category: RF
+  dtype: int
+  default: 0
+- id:  ref_level
+  label: Ref Level (dBm)
+  category: RF
+  dtype: float
+  default: 1.0
+
 asserts:
 - ${ bit_depth == '8' if type.fcn == 'sc8' else True }
 

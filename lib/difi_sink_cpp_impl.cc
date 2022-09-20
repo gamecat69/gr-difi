@@ -20,18 +20,18 @@ namespace gr {
     difi_sink_cpp<T>::make(u_int32_t reference_time_full, u_int64_t reference_time_frac, std::string ip_addr, uint32_t port, uint8_t socket_type,
                           bool mode, uint32_t samples_per_packet, int stream_number, int reference_point, u_int64_t samp_rate,
                           int packet_class, int oui, int context_interval, int context_pack_size, int bit_depth,
-                          int scaling, float gain, gr_complex offset, float max_iq, float min_iq)
+                          int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz)
     {
       return gnuradio::make_block_sptr<difi_sink_cpp_impl<T>>(reference_time_full, reference_time_frac, ip_addr, port, socket_type, mode,
                                                               samples_per_packet, stream_number, reference_point, samp_rate, packet_class, oui, context_interval, context_pack_size, bit_depth,
-                                                              scaling, gain, offset, max_iq, min_iq);
+                                                              scaling, gain, offset, max_iq, min_iq, bandwidth_hz);
     }
 
     template <class T>
     difi_sink_cpp_impl<T>::difi_sink_cpp_impl(u_int32_t reference_time_full, u_int64_t reference_time_frac, std::string ip_addr,
                                               uint32_t port, uint8_t socket_type, bool mode, uint32_t samples_per_packet, int stream_number, int reference_point,
                                               u_int64_t samp_rate, int packet_class, int oui, int context_interval, int context_pack_size, int bit_depth,
-                                              int scaling, float gain, gr_complex offset, float max_iq, float min_iq)
+                                              int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz)
       : gr::sync_block("difi_sink_cpp_impl",
               gr::io_signature::make(1, 1, sizeof(T)),
               gr::io_signature::make(0, 0, 0)),
@@ -88,10 +88,6 @@ namespace gr {
       d_data_len = samples_per_packet * d_unpack_idx_size * 2;
       u_int32_t tmp_header_data = d_static_bits ^ d_pkt_n << 16 ^ (d_data_len / 4);
 
-
-      // Nik Ansell: Manualyl override the context packet size for now, based on new context packet encoding format
-      context_pack_size = 84;
-
       u_int32_t tmp_header_context = d_context_static_bits ^ d_context_packet_count << 16 ^ (context_pack_size  / 4);
       u_int64_t class_id = d_oui << 32 ^ d_packet_class;
       d_raw.resize(difi::DIFI_HEADER_SIZE);
@@ -115,8 +111,9 @@ namespace gr {
       u_int32_t state_and_event_id =difi::DEFAULT_STATE_AND_EVENTS; // default no events or state values. See 7.1.5.17 The State and Event Indicator Field of the VITA spec
       // no fractional bw or samp rate supported in gnuradio, see 2.2.2 Standard Flow Signal Context Packet for bandwidth information
       // Bandwidth spec: Refer to section 9.5.1 of the VITA 49.2 (AV49DOT2-2017__Earata.pdf)
-      u_int64_t to_vita_bw = u_int64_t(samp_rate * .8) << 20; // Converted to fixed point with radix point 20 bits to the left
+      //u_int64_t to_vita_bw = u_int64_t(samp_rate * .8) << 20; // Converted to fixed point with radix point 20 bits to the left
       u_int64_t to_vita_samp_rate = samp_rate << 20; // Converted to fixed point with radix point 20 bits to the left
+      u_int64_t to_vita_bw = bandwidth_hz << 20;
 
 
       // Nik Ansell: Add time stamps from first context packet
@@ -179,18 +176,18 @@ namespace gr {
 
         // samplerate: 265000  : 000004e200000000
         // samplerate: 5625000 : 0000055d4a800000
+        //pack_u64(&d_context_raw[64], samp_rate); // 9.5.12 Sample Rate Field
+        //pack_u64(&d_context_raw[64], 0x0000055d4a800000); // 9.5.12 Sample Rate Field
+        //pack_u32(&d_context_raw[72], 0xa00a0000); // State and event indicators
+        //pack_u64(&d_context_raw[32], 0x000004c4b4000000); // 9.5.1 Bandwidth Field
 
         pack_u32(&d_context_raw[28], 0xB9A18000); // CIF
         pack_u64(&d_context_raw[32], to_vita_bw); // 9.5.1 Bandwidth Field
-        //pack_u64(&d_context_raw[32], 0x000004c4b4000000); // 9.5.1 Bandwidth Field
         pack_u64(&d_context_raw[40], 0); // 9.5.5 IF Reference Frequency Field 
         pack_u64(&d_context_raw[48], 0x00084e3786000000); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
         pack_u32(&d_context_raw[56], 0x00000080); // 9.5.9 Reference Level Field
         pack_u32(&d_context_raw[60], 0x00000380); // 9.5.3 Gain/Attenuation Field
-        //pack_u64(&d_context_raw[64], samp_rate); // 9.5.12 Sample Rate Field
-        //pack_u64(&d_context_raw[64], 0x0000055d4a800000); // 9.5.12 Sample Rate Field
         pack_u64(&d_context_raw[64], to_vita_samp_rate); // 9.5.12 Sample Rate Field
-        //pack_u32(&d_context_raw[72], 0xa00a0000); // State and event indicators
         pack_u32(&d_context_raw[72], state_and_event_id); // State and event indicators
         pack_u64(&d_context_raw[76], data_payload_format);  // Data packet format
       }

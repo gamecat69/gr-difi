@@ -47,7 +47,9 @@ namespace gr {
 
         void process_tags(int noutput_items);
         void pack_T(T val);
+        // Nik Ansell: Function to troubleshoot float to fixed point to hex conversion
         std::string int64ToHex(u_int64_t input);
+
         std::vector<int8_t> pack_data();
         void send_context();
         std::tuple<u_int32_t, u_int64_t> add_frac_full();
@@ -92,7 +94,7 @@ namespace gr {
      public:
       difi_sink_cpp_impl(u_int32_t reference_time_full, u_int64_t reference_time_frac, std::string ip_addr, uint32_t port, uint8_t socket_type, bool mode,
                         uint32_t samples_per_packet, int stream_number, int reference_point, u_int64_t samp_rate, int packet_class,
-                        int oui, int context_interval, int context_pack_size, int bit_depth, int scaling, float gain, gr_complex offset, float max_iq, float min_iq);
+                        int oui, int context_interval, int context_pack_size, int bit_depth, int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz);
       ~difi_sink_cpp_impl();
 
       // Where all the action really happens
