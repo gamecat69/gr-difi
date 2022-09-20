@@ -87,6 +87,7 @@ namespace gr {
         gr_complex d_offset;
         float d_max_iq;
         float d_min_iq;
+        u_int64_t bandwidth_hz;
 
         tcp_client* p_tcpsocket;
         udp_socket* p_udpsocket;
