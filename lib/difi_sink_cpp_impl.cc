@@ -154,12 +154,8 @@ namespace gr {
         // The reference point indicates location in the system that the digital samples are conveying
         // information about. The value of 0x64 indicates it is at the RF input for the RF-to-IP
         // direction and the RF output in the IP-to-RF direction.
-        //std::ostringstream ss;
-        //ss << std::hex << reference_point;
-        //std::string result = ss.str();
-        //std::hex << n << '\n';
 
-        GR_LOG_INFO(this->d_logger, "reference_point: " << std::hex << reference_point);
+        GR_LOG_INFO(this->d_logger, "reference_point: " std::to_string(reference_point));
         GR_LOG_INFO(this->d_logger, "to_vita_bw: " + std::to_string(to_vita_bw));
         GR_LOG_INFO(this->d_logger, "samp_rate: " + std::to_string(to_vita_samp_rate));
 
@@ -436,6 +432,14 @@ namespace gr {
       auto im = (static_cast<int16_t>(val.imag()));
       memcpy(&d_out_buf[d_current_buff_idx], &re, d_unpack_idx_size);
       memcpy(&d_out_buf[d_current_buff_idx + d_unpack_idx_size], &im, d_unpack_idx_size);
+    }
+
+    template <class T>
+    std::string difi_sink_cpp_impl<T>::int64ToHex(u_int64_t input) {
+      std::ostringstream ss;
+      ss << std::hex << input;
+      std::string output = ss.str();
+      return output;
     }
 
     template class difi_sink_cpp<gr_complex>;
