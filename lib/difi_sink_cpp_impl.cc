@@ -154,7 +154,10 @@ namespace gr {
         // The reference point indicates location in the system that the digital samples are conveying
         // information about. The value of 0x64 indicates it is at the RF input for the RF-to-IP
         // direction and the RF output in the IP-to-RF direction.
-        GR_LOG_INFO(this->d_logger, "reference_point: " + std::to_string(reference_point));
+        std::ostringstream ss;
+        ss << std::hex << reference_point;
+
+        GR_LOG_INFO(this->d_logger, "reference_point: " + std::to_string(ss));
         GR_LOG_INFO(this->d_logger, "to_vita_bw: " + std::to_string(to_vita_bw));
         GR_LOG_INFO(this->d_logger, "samp_rate: " + std::to_string(to_vita_samp_rate));
 
@@ -177,8 +180,8 @@ namespace gr {
         // bandwidth: 200000 : 00000030d4000000
         // bandwidth: 5000000: 000004c4b4000000
 
-        // samplerate: 265000 : 000004e200000000
-        // 
+        // samplerate: 265000  : 000004e200000000
+        // samplerate: 5625000 : 0000055d4a800000
 
         pack_u32(&d_context_raw[28], 0xB9A18000); // CIF
         //pack_u64(&d_context_raw[32], to_vita_bw); // 9.5.1 Bandwidth Field
