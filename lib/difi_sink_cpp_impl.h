@@ -47,6 +47,7 @@ namespace gr {
 
         void process_tags(int noutput_items);
         void pack_T(T val);
+        std::string int64ToHex(u_int64_t input);
         std::vector<int8_t> pack_data();
         void send_context();
         std::tuple<u_int32_t, u_int64_t> add_frac_full();
