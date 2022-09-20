@@ -159,7 +159,7 @@ namespace gr {
         //std::string result = ss.str();
         //std::hex << n << '\n';
 
-        GR_LOG_INFO(this->d_logger, "reference_point: " + std::hex(result);
+        GR_LOG_INFO(this->d_logger, "reference_point: " + std::hex(result));
         GR_LOG_INFO(this->d_logger, "to_vita_bw: " + std::to_string(to_vita_bw));
         GR_LOG_INFO(this->d_logger, "samp_rate: " + std::to_string(to_vita_samp_rate));
 
