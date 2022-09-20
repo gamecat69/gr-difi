@@ -195,9 +195,12 @@ namespace gr {
         pack_u32(&d_context_raw[28], 0xB9A18000); // CIF
         pack_u64(&d_context_raw[32], to_vita_bw); // 9.5.1 Bandwidth Field
         pack_u64(&d_context_raw[40], 0); // 9.5.5 IF Reference Frequency Field 
-        pack_u64(&d_context_raw[48], 0x00084e3786000000); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
-        pack_u32(&d_context_raw[56], 0x00000080); // 9.5.9 Reference Level Field
-        pack_u32(&d_context_raw[60], 0x00000380); // 9.5.3 Gain/Attenuation Field
+        // pack_u64(&d_context_raw[48], 0x00084e3786000000); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
+        // pack_u32(&d_context_raw[56], 0x00000080); // 9.5.9 Reference Level Field
+        // pack_u32(&d_context_raw[60], 0x00000380); // 9.5.3 Gain/Attenuation Field
+        pack_u64(&d_context_raw[48], to_vita_rf_ref_hz); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
+        pack_u32(&d_context_raw[56], to_vita_ref_level); // 9.5.9 Reference Level Field
+        pack_u32(&d_context_raw[60], to_vita_tx_gain); // 9.5.3 Gain/Attenuation Field
         pack_u64(&d_context_raw[64], to_vita_samp_rate); // 9.5.12 Sample Rate Field
         pack_u32(&d_context_raw[72], state_and_event_id); // State and event indicators
         pack_u64(&d_context_raw[76], data_payload_format);  // Data packet format
