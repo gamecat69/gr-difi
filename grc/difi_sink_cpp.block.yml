@@ -123,10 +123,6 @@ parameters:
   dtype: real
   default: -1.0
   hide: ${ ('none' if scaling == '2' else 'all') }
-inputs:
-- label: in
-  domain: stream
-  dtype: ${type.fcn}
 
 - id:  bandwidth_hz
   label: Bandwidth (Hz)
@@ -148,6 +144,11 @@ inputs:
   category: RF
   dtype: float
   default: 1.0
+
+inputs:
+- label: in
+  domain: stream
+  dtype: ${type.fcn}
 
 asserts:
 - ${ bit_depth == '8' if type.fcn == 'sc8' else True }
