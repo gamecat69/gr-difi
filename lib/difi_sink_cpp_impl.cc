@@ -154,11 +154,12 @@ namespace gr {
         // The reference point indicates location in the system that the digital samples are conveying
         // information about. The value of 0x64 indicates it is at the RF input for the RF-to-IP
         // direction and the RF output in the IP-to-RF direction.
-        std::ostringstream ss;
-        ss << std::hex << reference_point;
-        std::string result = ss.str();
+        //std::ostringstream ss;
+        //ss << std::hex << reference_point;
+        //std::string result = ss.str();
+        //std::hex << n << '\n';
 
-        GR_LOG_INFO(this->d_logger, "reference_point: " + result);
+        GR_LOG_INFO(this->d_logger, "reference_point: " + std::hex(result);
         GR_LOG_INFO(this->d_logger, "to_vita_bw: " + std::to_string(to_vita_bw));
         GR_LOG_INFO(this->d_logger, "samp_rate: " + std::to_string(to_vita_samp_rate));
 
