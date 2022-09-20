@@ -156,8 +156,9 @@ namespace gr {
         // direction and the RF output in the IP-to-RF direction.
         std::ostringstream ss;
         ss << std::hex << reference_point;
+        std::string result = ss.str();
 
-        GR_LOG_INFO(this->d_logger, "reference_point: " + std::to_string(ss));
+        GR_LOG_INFO(this->d_logger, "reference_point: " + result);
         GR_LOG_INFO(this->d_logger, "to_vita_bw: " + std::to_string(to_vita_bw));
         GR_LOG_INFO(this->d_logger, "samp_rate: " + std::to_string(to_vita_samp_rate));
 
