@@ -115,18 +115,13 @@ namespace gr {
       u_int32_t state_and_event_id =difi::DEFAULT_STATE_AND_EVENTS; // default no events or state values. See 7.1.5.17 The State and Event Indicator Field of the VITA spec
       // no fractional bw or samp rate supported in gnuradio, see 2.2.2 Standard Flow Signal Context Packet for bandwidth information
       // Bandwidth spec: Refer to section 9.5.1 of the VITA 49.2 (AV49DOT2-2017__Earata.pdf)
-      //u_int64_t to_vita_bw = u_int64_t(samp_rate * .8) << 20; // Converted to fixed point with radix point 20 bits to the left
       u_int64_t to_vita_samp_rate = samp_rate << 20; // Converted to fixed point with radix point 20 bits to the left
+      // Nik Ansell: Updated to use bandwidth_hz parameter from GNU Radio
       u_int64_t to_vita_bw = bandwidth_hz << 20;
-
-      u_int32_t to_vita_tx_gain = tx_gain << 7;
-      u_int64_t to_vita_rf_ref_hz = rf_ref_hz << 20;
-      u_int32_t to_vita_ref_level = ref_level << 7;
-
-      // Nik Ansell: Add time stamps from first context packet
-      //u_int32_t full = std::time(nullptr);
-      //u_int64_t frac = 0;
-      //std::tie(full, frac) = add_frac_full();
+      // Nik Ansell: Pull new parameters from GNU Radio
+      u_int32_t to_vita_tx_gain = tx_gain << 7; // Convert to fixed point with 7 fractional bits
+      u_int64_t to_vita_rf_ref_hz = rf_ref_hz << 20; // Convert to fixed point with 20 fractional bits
+      u_int32_t to_vita_ref_level = ref_level << 7; // Convert to fixed point with 7 fractional bits
 
       if(context_pack_size == 72)// this check is a temporary work around for a non-compliant hardware device
       {
@@ -140,8 +135,41 @@ namespace gr {
         pack_u64(&d_context_raw[difi::CONTEXT_PACKET_ALT_OFFSETS[idx++]], data_payload_format);
 
       }
+      else if (context_pack_size == 84)// Added for other non-compliant devices :)
+      {
+
+        // Debug output - remove after testing
+        GR_LOG_INFO(this->d_logger, "Context packet size: 84");
+        GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
+        GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
+        GR_LOG_INFO(this->d_logger, "to_vita_samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
+        GR_LOG_INFO(this->d_logger, "to_vita_tx_gain: 0x" + int64ToHex(to_vita_tx_gain));
+        GR_LOG_INFO(this->d_logger, "to_vita_rf_ref_hz: 0x" + int64ToHex(to_vita_rf_ref_hz));
+        GR_LOG_INFO(this->d_logger, "to_vita_ref_level: 0x" + int64ToHex(to_vita_ref_level));
+
+        pack_u32(&d_context_raw[16], 0); // Int Timestamp
+        pack_u64(&d_context_raw[20], 0); // Frac Timestamp
+        pack_u32(&d_context_raw[28], 0xB9A18000); // CIF with Change indicator set to 1
+        pack_u64(&d_context_raw[32], to_vita_bw); // 9.5.1 Bandwidth Field
+        pack_u64(&d_context_raw[40], 0); // 9.5.5 IF Reference Frequency Field 
+        pack_u64(&d_context_raw[48], to_vita_rf_ref_hz); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
+        pack_u32(&d_context_raw[56], to_vita_ref_level); // 9.5.9 Reference Level Field
+        pack_u32(&d_context_raw[60], to_vita_tx_gain); // 9.5.3 Gain/Attenuation Field
+        pack_u64(&d_context_raw[64], to_vita_samp_rate); // 9.5.12 Sample Rate Field
+        pack_u32(&d_context_raw[72], state_and_event_id); // State and event indicators
+        pack_u64(&d_context_raw[76], data_payload_format);  // Data packet format
+
+      }
       else
       {
+
+        // GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
+        // GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
+        // GR_LOG_INFO(this->d_logger, "to_vita_samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
+        // GR_LOG_INFO(this->d_logger, "to_vita_tx_gain: 0x" + int64ToHex(to_vita_tx_gain));
+        // GR_LOG_INFO(this->d_logger, "to_vita_rf_ref_hz: 0x" + int64ToHex(to_vita_rf_ref_hz));
+        // GR_LOG_INFO(this->d_logger, "to_vita_ref_level: 0x" + int64ToHex(to_vita_ref_level));
+
         pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // Int Timestamp
         pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // Frac Timestamp
         //pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], full); // Int Timestamp?
@@ -157,14 +185,6 @@ namespace gr {
         // The reference point indicates location in the system that the digital samples are conveying
         // information about. The value of 0x64 indicates it is at the RF input for the RF-to-IP
         // direction and the RF output in the IP-to-RF direction.
-
-        GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
-        GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
-        GR_LOG_INFO(this->d_logger, "to_vita_samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
-
-        GR_LOG_INFO(this->d_logger, "to_vita_tx_gain: 0x" + int64ToHex(to_vita_tx_gain));
-        GR_LOG_INFO(this->d_logger, "to_vita_rf_ref_hz: 0x" + int64ToHex(to_vita_rf_ref_hz));
-        GR_LOG_INFO(this->d_logger, "to_vita_ref_level: 0x" + int64ToHex(to_vita_ref_level));
 
         //pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0xFBB98000  ); // CIF 11111011101110011000000000000000 0xFBB98000
         
@@ -182,22 +202,24 @@ namespace gr {
         // pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], state_and_event_id);
         // pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], data_payload_format);
 
+        // ======================
+        // Working values:
+        // ======================
         // bandwidth: 200000 : 00000030d4000000
         // bandwidth: 5000000: 000004c4b4000000
-
         // samplerate: 265000  : 000004e200000000
         // samplerate: 5625000 : 0000055d4a800000
-        //pack_u64(&d_context_raw[64], samp_rate); // 9.5.12 Sample Rate Field
-        //pack_u64(&d_context_raw[64], 0x0000055d4a800000); // 9.5.12 Sample Rate Field
-        //pack_u32(&d_context_raw[72], 0xa00a0000); // State and event indicators
-        //pack_u64(&d_context_raw[32], 0x000004c4b4000000); // 9.5.1 Bandwidth Field
+        // pack_u64(&d_context_raw[64], samp_rate); // 9.5.12 Sample Rate Field
+        // pack_u64(&d_context_raw[64], 0x0000055d4a800000); // 9.5.12 Sample Rate Field
+        // pack_u32(&d_context_raw[72], 0xa00a0000); // State and event indicators
+        // pack_u64(&d_context_raw[32], 0x000004c4b4000000); // 9.5.1 Bandwidth Field
+        // pack_u64(&d_context_raw[48], 0x00084e3786000000); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
+        // pack_u32(&d_context_raw[56], 0x00000080); // 9.5.9 Reference Level Field
+        // pack_u32(&d_context_raw[60], 0x00000380); // 9.5.3 Gain/Attenuation Field
 
         pack_u32(&d_context_raw[28], 0xB9A18000); // CIF
         pack_u64(&d_context_raw[32], to_vita_bw); // 9.5.1 Bandwidth Field
         pack_u64(&d_context_raw[40], 0); // 9.5.5 IF Reference Frequency Field 
-        // pack_u64(&d_context_raw[48], 0x00084e3786000000); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
-        // pack_u32(&d_context_raw[56], 0x00000080); // 9.5.9 Reference Level Field
-        // pack_u32(&d_context_raw[60], 0x00000380); // 9.5.3 Gain/Attenuation Field
         pack_u64(&d_context_raw[48], to_vita_rf_ref_hz); // 9.5.10 RF Reference Frequency Field. If 0 some devices will ignore all data packets
         pack_u32(&d_context_raw[56], to_vita_ref_level); // 9.5.9 Reference Level Field
         pack_u32(&d_context_raw[60], to_vita_tx_gain); // 9.5.3 Gain/Attenuation Field
