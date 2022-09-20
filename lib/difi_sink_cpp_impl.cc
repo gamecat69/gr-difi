@@ -20,18 +20,18 @@ namespace gr {
     difi_sink_cpp<T>::make(u_int32_t reference_time_full, u_int64_t reference_time_frac, std::string ip_addr, uint32_t port, uint8_t socket_type,
                           bool mode, uint32_t samples_per_packet, int stream_number, int reference_point, u_int64_t samp_rate,
                           int packet_class, int oui, int context_interval, int context_pack_size, int bit_depth,
-                          int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz)
+                          int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz, uint32_t tx_gain, u_int64_t rf_ref_hz, uint32_t ref_level)
     {
       return gnuradio::make_block_sptr<difi_sink_cpp_impl<T>>(reference_time_full, reference_time_frac, ip_addr, port, socket_type, mode,
                                                               samples_per_packet, stream_number, reference_point, samp_rate, packet_class, oui, context_interval, context_pack_size, bit_depth,
-                                                              scaling, gain, offset, max_iq, min_iq, bandwidth_hz);
+                                                              scaling, gain, offset, max_iq, min_iq, bandwidth_hz, tx_gain, rf_ref_hz, ref_level);
     }
 
     template <class T>
     difi_sink_cpp_impl<T>::difi_sink_cpp_impl(u_int32_t reference_time_full, u_int64_t reference_time_frac, std::string ip_addr,
                                               uint32_t port, uint8_t socket_type, bool mode, uint32_t samples_per_packet, int stream_number, int reference_point,
                                               u_int64_t samp_rate, int packet_class, int oui, int context_interval, int context_pack_size, int bit_depth,
-                                              int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz)
+                                              int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz, uint32_t tx_gain, u_int64_t rf_ref_hz, uint32_t ref_level)
       : gr::sync_block("difi_sink_cpp_impl",
               gr::io_signature::make(1, 1, sizeof(T)),
               gr::io_signature::make(0, 0, 0)),
@@ -50,7 +50,10 @@ namespace gr {
               d_contex_packet_interval(context_interval),
               p_tcpsocket(0),
               p_udpsocket(0),
-              d_bandwidth_hz(bandwidth_hz)
+              d_bandwidth_hz(bandwidth_hz),
+              d_bandwidth_hz(tx_gain),
+              d_bandwidth_hz(rf_ref_hz),
+              d_bandwidth_hz(ref_level)
 
     {
       socket_type = (socket_type == 1) ?  SOCK_STREAM : SOCK_DGRAM;
@@ -116,6 +119,9 @@ namespace gr {
       u_int64_t to_vita_samp_rate = samp_rate << 20; // Converted to fixed point with radix point 20 bits to the left
       u_int64_t to_vita_bw = bandwidth_hz << 20;
 
+      u_int32_t to_vita_tx_gain = tx_gain << 7;
+      u_int64_t to_vita_rf_ref_hz = rf_ref_hz << 20;
+      u_int32_t to_vita_ref_level = ref_level << 7;
 
       // Nik Ansell: Add time stamps from first context packet
       //u_int32_t full = std::time(nullptr);
@@ -154,7 +160,11 @@ namespace gr {
 
         GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
         GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
-        GR_LOG_INFO(this->d_logger, "samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
+        GR_LOG_INFO(this->d_logger, "to_vita_samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
+
+        GR_LOG_INFO(this->d_logger, "to_vita_tx_gain: 0x" + int64ToHex(to_vita_tx_gain));
+        GR_LOG_INFO(this->d_logger, "to_vita_rf_ref_hz: 0x" + int64ToHex(to_vita_rf_ref_hz));
+        GR_LOG_INFO(this->d_logger, "to_vita_ref_level: 0x" + int64ToHex(to_vita_ref_level));
 
         //pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0xFBB98000  ); // CIF 11111011101110011000000000000000 0xFBB98000
         

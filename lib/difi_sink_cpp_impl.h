@@ -88,14 +88,17 @@ namespace gr {
         float d_max_iq;
         float d_min_iq;
         u_int64_t d_bandwidth_hz;
-
+        uint32_t d_tx_gain;
+        u_int64_t d_rf_ref_hz;
+        uint32_t d_ref_level;
         tcp_client* p_tcpsocket;
         udp_socket* p_udpsocket;
 
      public:
       difi_sink_cpp_impl(u_int32_t reference_time_full, u_int64_t reference_time_frac, std::string ip_addr, uint32_t port, uint8_t socket_type, bool mode,
                         uint32_t samples_per_packet, int stream_number, int reference_point, u_int64_t samp_rate, int packet_class,
-                        int oui, int context_interval, int context_pack_size, int bit_depth, int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz);
+                        int oui, int context_interval, int context_pack_size, int bit_depth, int scaling, float gain, gr_complex offset, float max_iq, float min_iq, u_int64_t bandwidth_hz,
+                        uint32_t tx_gain, u_int64_t rf_ref_hz, uint32_t ref_level);
       ~difi_sink_cpp_impl();
 
       // Where all the action really happens

@@ -47,6 +47,9 @@ void bind_difi_sink_cpp_template(py::module& m, const char* classname)
            py::arg("max_iq"),
            py::arg("min_iq"),
            py::arg("bandwidth_hz"),
+           py::arg("tx_gain"),
+           py::arg("rf_ref_hz"),
+           py::arg("ref_level"),
            D(difi_sink_cpp,make)
         );
 
