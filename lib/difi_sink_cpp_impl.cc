@@ -51,9 +51,9 @@ namespace gr {
               p_tcpsocket(0),
               p_udpsocket(0),
               d_bandwidth_hz(bandwidth_hz),
-              d_bandwidth_hz(tx_gain),
-              d_bandwidth_hz(rf_ref_hz),
-              d_bandwidth_hz(ref_level)
+              d_tx_gain(tx_gain),
+              d_rf_ref_hz(rf_ref_hz),
+              d_ref_level(ref_level)
 
     {
       socket_type = (socket_type == 1) ?  SOCK_STREAM : SOCK_DGRAM;
