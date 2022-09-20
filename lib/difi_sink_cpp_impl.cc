@@ -434,8 +434,7 @@ namespace gr {
       memcpy(&d_out_buf[d_current_buff_idx + d_unpack_idx_size], &im, d_unpack_idx_size);
     }
 
-    template <class T>
-    std::string difi_sink_cpp_impl<T>::int64ToHex(u_int64_t input) {
+    std::string int64ToHex(u_int64_t input) {
       std::ostringstream ss;
       ss << std::hex << input;
       std::string output = ss.str();
