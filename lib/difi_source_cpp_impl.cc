@@ -71,12 +71,12 @@ namespace gr {
 
       if(socket_type == SOCK_STREAM)
       {
-        GR_LOG_INFO(this->d_logger, "[TCP] Connecting to:" + ip_addr + ":" + std::to_string(port));
+        GR_LOG_INFO(this->d_logger, "[TCP] Listening on:" + ip_addr + ":" + std::to_string(port));
         p_tcpserver = new tcp_server(ip_addr,port);
       }
       else
       {
-        GR_LOG_INFO(this->d_logger, "[UDP] Connecting to:" + ip_addr + ":" + std::to_string(port));
+        GR_LOG_INFO(this->d_logger, "[UDP] Listening on:" + ip_addr + ":" + std::to_string(port));
         p_udpsocket = new udp_socket(ip_addr,port,true);
       }
 
