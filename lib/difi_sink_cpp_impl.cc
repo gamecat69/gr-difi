@@ -57,14 +57,15 @@ namespace gr {
 
     {
       socket_type = (socket_type == 1) ?  SOCK_STREAM : SOCK_DGRAM;
-      // Nik Ansell: Show connection message in logs for troubleshooting
-      GR_LOG_INFO(this->d_logger, "Connecting to:" + ip_addr + ":" + std::to_string(port));
       if(socket_type == SOCK_DGRAM)
       {
+        // Nik Ansell: Show connection message in logs for troubleshooting
+        GR_LOG_INFO(this->d_logger, "[UDP] Connecting to:" + ip_addr + ":" + std::to_string(port));
         p_udpsocket = new udp_socket(ip_addr,port,false);
       }
       else
       {
+        GR_LOG_INFO(this->d_logger, "[TCP] Connecting to:" + ip_addr + ":" + std::to_string(port));
         p_tcpsocket = new tcp_client(ip_addr,port);
       }
 
@@ -163,23 +164,13 @@ namespace gr {
       else
       {
 
-        // GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
-        // GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
-        // GR_LOG_INFO(this->d_logger, "to_vita_samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
-        // GR_LOG_INFO(this->d_logger, "to_vita_tx_gain: 0x" + int64ToHex(to_vita_tx_gain));
-        // GR_LOG_INFO(this->d_logger, "to_vita_rf_ref_hz: 0x" + int64ToHex(to_vita_rf_ref_hz));
-        // GR_LOG_INFO(this->d_logger, "to_vita_ref_level: 0x" + int64ToHex(to_vita_ref_level));
-
         pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // Int Timestamp
         pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // Frac Timestamp
-        //pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], full); // Int Timestamp?
-        //pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], frac); // Frac Timestamp?
         // Nik Ansell: I think the next value is the CIF. The first bit in the CIF should be set to 1
         // fo the first context packet. This tells the receiving device that something has changed.
         // The receiving device can then attempt to configure itself using the meta data in the context packet.
         // Many devices will ignore the VITA49 stream is this is not done
         // 10000000000000000000000000000000 in decimal = 2147483648
-        //GR_LOG_INFO(this->d_logger, "[" + std::to_string(d_context_packet_count) + "] CIF change bit=1");
         // pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0);
         //pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 2147483648); 3114369024 / 0xB9A18000
         // The reference point indicates location in the system that the digital samples are conveying
@@ -426,7 +417,8 @@ namespace gr {
         if (d_context_packet_count < 1) {
           pack_u32(&d_context_raw[28], 0xB9A18000  );  
         }
-        else{
+        else
+        {
           pack_u32(&d_context_raw[28], 0x39A18000  );   
         }
         
