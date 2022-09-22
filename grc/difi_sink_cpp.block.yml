@@ -220,4 +220,16 @@ documentation: |-
      min_iq:
      In Min-Max scaling mode, expectd minimum value of I or Q ie. Min(Min(I),Min(Q))
 
+     bandwidth_hz:
+     (Not all devices/software needs this) The bandwidth of the transmission in Hz
+
+     tx_gain:
+     (Not all devices/software needs this) The required path gain/attenuation.
+
+     rf_ref_hz:
+     (Not all devices/software needs this) The centre frequency of the transmission in Hz.
+
+     ref_level:
+     (Not all devices/software needs this) The Reference Level field has no meaning for processes with analog outputs. See VITA49 spec for more info.
+
 file_format: 1
