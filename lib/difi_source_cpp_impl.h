@@ -105,6 +105,7 @@ private:
     pmt::pmt_t make_pkt_n_dict(int pkt_n, int size_gotten);
     void unpack_context(context_packet& context);
     void unpack_context_alt(context_packet& context);
+    void unpack_context_alt2(context_packet& context);
     pmt::pmt_t make_context_dict(header_data& header, int size_gotten);
     int buffer_and_send(T* out, int noutput_items);
 
