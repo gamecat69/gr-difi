@@ -354,18 +354,18 @@ namespace gr {
     void difi_source_cpp_impl<T>::unpack_context_alt2(context_packet &context)
     {
       int idx = 0;
-      context.class_id = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.full = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.frac = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.cif = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.bw = parse_vita_fixed_double(unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]));
-      context.if_ref_freq = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.rf_ref_freq = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.ref_lvl = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.gain = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.samp_rate = parse_vita_fixed_double(unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]));
-      context.state_indicators = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
-      context.payload_format = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_OFFSETS[idx++]]);
+      context.class_id = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.full = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.frac = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.cif = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.bw = parse_vita_fixed_double(unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]));
+      context.if_ref_freq = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.rf_ref_freq = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.ref_lvl = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.gain = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.samp_rate = parse_vita_fixed_double(unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]));
+      context.state_indicators = unpack_u32(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
+      context.payload_format = unpack_u64(&d_packet_buffer[difi::CONTEXT_PACKET_ALT_2_OFFSETS[idx++]]);
     }
 
     template class difi_source_cpp<gr_complex>;
