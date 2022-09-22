@@ -62,11 +62,17 @@ namespace gr {
         // Nik Ansell: Show connection message in logs for troubleshooting
         GR_LOG_INFO(this->d_logger, "[UDP] Connecting to:" + ip_addr + ":" + std::to_string(port));
         p_udpsocket = new udp_socket(ip_addr,port,false);
+        if (!p_udpsocket) {
+          GR_LOG_ERROR(this->d_logger, "Unable to connect to UDP server");
+        }
       }
       else
       {
         GR_LOG_INFO(this->d_logger, "[TCP] Connecting to:" + ip_addr + ":" + std::to_string(port));
         p_tcpsocket = new tcp_client(ip_addr,port);
+        if (!p_tcpsocket) {
+          GR_LOG_ERROR(this->d_logger, "Unable to connect to UDP server");
+        }
       }
 
       if (samples_per_packet < 2)
@@ -263,6 +269,7 @@ namespace gr {
           bool res = p_tcpsocket->connect();
           if(!res)
           {
+            GR_LOG_ERROR(this->d_logger, "Failed to connect to TCP Server" + ip_addr + ":" + std::to_string(port));
             return 0;
           }
         }
