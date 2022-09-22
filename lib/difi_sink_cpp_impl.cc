@@ -269,7 +269,7 @@ namespace gr {
           bool res = p_tcpsocket->connect();
           if(!res)
           {
-            GR_LOG_ERROR(this->d_logger, "Failed to connect to TCP Server" + ip_addr + ":" + std::to_string(port));
+            GR_LOG_ERROR(this->d_logger, "Failed to connect to TCP Server");
             return 0;
           }
         }
