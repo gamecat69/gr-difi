@@ -180,7 +180,7 @@ namespace gr {
         //pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0xFBB98000  ); // CIF 11111011101110011000000000000000 0xFBB98000
         
 
-        // pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], reference_point);
+        // pack_u32(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], reference_point); // 9.2 Reference Point Identifier Field
         // pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], to_vita_bw); // 9.5.1 Bandwidth Field
         // pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // 9.5.5 IF Reference Frequency Field 
         // pack_u64(&d_context_raw[difi::CONTEXT_PACKET_OFFSETS[idx++]], 0); // 9.5.10 RF Reference Frequency Field
