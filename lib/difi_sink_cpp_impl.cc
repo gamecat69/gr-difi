@@ -146,13 +146,13 @@ namespace gr {
       {
 
         // Debug output - remove after testing
-        GR_LOG_INFO(this->d_logger, "Context packet size: 84");
-        GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
-        GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
-        GR_LOG_INFO(this->d_logger, "to_vita_samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
-        GR_LOG_INFO(this->d_logger, "to_vita_tx_gain: 0x" + int64ToHex(to_vita_tx_gain));
-        GR_LOG_INFO(this->d_logger, "to_vita_rf_ref_hz: 0x" + int64ToHex(to_vita_rf_ref_hz));
-        GR_LOG_INFO(this->d_logger, "to_vita_ref_level: 0x" + int64ToHex(to_vita_ref_level));
+        // GR_LOG_INFO(this->d_logger, "Context packet size: 84");
+        // GR_LOG_INFO(this->d_logger, "reference_point: 0x" + int64ToHex(reference_point));
+        // GR_LOG_INFO(this->d_logger, "to_vita_bw: 0x" + int64ToHex(to_vita_bw));
+        // GR_LOG_INFO(this->d_logger, "to_vita_samp_rate: 0x" + int64ToHex(to_vita_samp_rate));
+        // GR_LOG_INFO(this->d_logger, "to_vita_tx_gain: 0x" + int64ToHex(to_vita_tx_gain));
+        // GR_LOG_INFO(this->d_logger, "to_vita_rf_ref_hz: 0x" + int64ToHex(to_vita_rf_ref_hz));
+        // GR_LOG_INFO(this->d_logger, "to_vita_ref_level: 0x" + int64ToHex(to_vita_ref_level));
 
         pack_u32(&d_context_raw[16], 0); // Int Timestamp
         pack_u64(&d_context_raw[20], 0); // Frac Timestamp
