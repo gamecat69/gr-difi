@@ -54,8 +54,9 @@ namespace gr {
     difi_source_cpp_impl<T>::difi_source_cpp_impl(std::string ip_addr, uint32_t port, uint8_t socket_type, int stream_number, int bit_depth, int context_pkt_behavior)
         : gr::sync_block("source_cpp", gr::io_signature::make(0, 0, 0),
                          gr::io_signature::make(1 /* min outputs */,
-                                                1 /*max outputs */,
+                                                2 /*max outputs */,
                                                 sizeof(T))),
+
           d_stream_number(stream_number),
           d_behavior(context_pkt_behavior),
           d_send(true),
@@ -63,9 +64,14 @@ namespace gr {
           d_last_pkt_n(-1),
           d_static_bits(-1),
           p_tcpserver(NULL),
-          p_udpsocket(NULL)
+          p_udpsocket(NULL),
+          d_context_metadata_sent(false),
+          d_context_warning_sent(false)
 
     {
+
+      // register message port to send vita49 meta data to downstream blocks
+      this->message_port_register_out(pmt::mp("meta"));
 
       socket_type = (socket_type == 1) ?  SOCK_STREAM : SOCK_DGRAM;
 
@@ -307,11 +313,31 @@ namespace gr {
             GR_LOG_ERROR(this->d_logger, error_string);
             throw std::runtime_error(error_string);
         }
-        d_send = d_behavior == context_behavior::warnings_forward;
-        GR_LOG_WARN(this->d_logger, error_string);
-        return NULL;
+        // N. Ansell
+        // Sending a warning with every context packet error will probably impact performance. Updated to just send only once.
+        // Also a warning should not mean the context packet is discarded as it may still be processable. Therefore remove the NULL return too.
+        if (! d_context_warning_sent) {
+           d_send = d_behavior == context_behavior::warnings_forward;
+           GR_LOG_WARN(this->d_logger, error_string);
+           //return NULL;
+           d_context_warning_sent = true;
+        }
       }
       d_send = true;
+
+      // Send decoded VITA49 metadata to GNU Radio message port and GNU Radio output
+      if (! d_context_metadata_sent) {
+         GR_LOG_INFO(this->d_logger, "sample_rate," + std::to_string((int)context.samp_rate));
+         // N. Ansell: This will be extended to send multiple meta data values. But only sends sample rate for now
+         // to allow for automated sample rate conversion in GNU Radio
+         // - target message format (to allow processing of multiple values by a downstream block): 'num_fields', 'name,value'
+         // - current message format (to allow the "Message to pair" block to obtain sample rate: 'num_fields', 'sample_rate'
+         pmt::pmt_t msg = pmt::cons(pmt::intern("1"), pmt::intern(std::to_string(context.samp_rate)));
+         this->message_port_pub(pmt::mp("meta"), msg);
+
+         d_context_metadata_sent = true;
+      }
+
       return pmt_dict;
     }
 

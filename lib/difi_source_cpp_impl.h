@@ -69,7 +69,6 @@ class difi_source_cpp_impl : public difi_source_cpp<T>
         u_int64_t payload_format;
     };
 
-
 private:
     template <typename  M>
     static M unpack_16(int8_t *start)
@@ -122,6 +121,8 @@ private:
     std::deque<char> d_deque;
     tcp_server* p_tcpserver;
     udp_socket* p_udpsocket;
+    bool d_context_metadata_sent;
+    bool d_context_warning_sent;
 
 public:
     difi_source_cpp_impl(std::string ip_addr,
