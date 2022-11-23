@@ -327,12 +327,12 @@ namespace gr {
 
       // Send decoded VITA49 metadata to GNU Radio message port and GNU Radio output
       if (! d_context_metadata_sent) {
-         GR_LOG_INFO(this->d_logger, "sample_rate," + std::to_string((int)context.samp_rate));
+         GR_LOG_INFO(this->d_logger, "sample_rate," + std::to_string((double)context.samp_rate));
          // N. Ansell: This will be extended to send multiple meta data values. But only sends sample rate for now
          // to allow for automated sample rate conversion in GNU Radio
          // - target message format (to allow processing of multiple values by a downstream block): 'num_fields', 'name,value'
          // - current message format (to allow the "Message to pair" block to obtain sample rate: 'num_fields', 'sample_rate'
-         pmt::pmt_t msg = pmt::cons(pmt::intern("1"), pmt::intern(std::to_string(context.samp_rate)));
+         pmt::pmt_t msg = pmt::cons(pmt::intern("1"), pmt::from_double(context.samp_rate));
          this->message_port_pub(pmt::mp("meta"), msg);
 
          d_context_metadata_sent = true;
